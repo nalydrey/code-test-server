@@ -36,6 +36,8 @@ export class CommentService {
     }
     
     createNew(createCommentDto: CreateCommentDto) {
+        console.log(createCommentDto);
+        
         const comment = new Comment()
         Object.assign(comment, createCommentDto)
         return this.repo.save(comment)
@@ -44,7 +46,6 @@ export class CommentService {
     async createNewReply(createCommentDto: CreateCommentDto, id: number){
         console.log(id, createCommentDto);
         
-        createCommentDto.isReply = true
         const comment = await this.repo.findOne({
             where: {id},
             relations: {

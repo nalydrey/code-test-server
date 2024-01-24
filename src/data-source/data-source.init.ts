@@ -2,6 +2,7 @@ import { DataSource } from "typeorm"
 import {config} from 'dotenv'
 import { User } from "../entities/user.entity"
 import { Comment } from "../entities/comment.entity"
+import { File } from "../entities/file.entity"
 config()
 
 export const myDataSource = new DataSource({
@@ -12,7 +13,7 @@ export const myDataSource = new DataSource({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_BASENAME,
     // entities: ["src/entity/*.js"],
-    entities: [User, Comment],
+    entities: [User, Comment, File],
     logging: true,
     synchronize: true,
 })

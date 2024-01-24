@@ -8,6 +8,8 @@ export function validateAndTransform(
   ) {
     return async (req: Request, res: Response, next: NextFunction) => {
       try {
+        console.log(req.body);
+        
         const instance = plainToClass(ValidateClass, req[from]);
         await validateOrReject(instance, { whitelist: true });
         req[from] = {...instance}

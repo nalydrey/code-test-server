@@ -17,6 +17,8 @@ export class CommentController {
     }
 
     async create(req: Request, res: Response){
+        console.log(req.body);
+        
         const comment = await this.commentService.createNew(req.body)
         res
             .status(201)

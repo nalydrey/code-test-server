@@ -1,4 +1,4 @@
-import { IsAlphanumeric, IsEmail, IsNotEmpty, IsOptional, IsString, IsUrl, Length, ValidateIf } from 'class-validator'
+import { Allow, IsAlphanumeric, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl, Length, ValidateIf } from 'class-validator'
 
 export class CreateCommentDto {
 
@@ -7,6 +7,10 @@ export class CreateCommentDto {
     @Length(3, 12)
     @IsAlphanumeric()
     userName: string
+
+    @IsNumber()
+    @ValidateIf((obj)=> obj.fileId)
+    fileId: number
 
     @IsNotEmpty()
     @IsString()
@@ -17,6 +21,9 @@ export class CreateCommentDto {
     @ValidateIf((obj)=> obj.homePage)
     @IsUrl()
     homePage: string
+
+    @IsString()
+    avatar: string
 
     @IsString()
     @IsNotEmpty()

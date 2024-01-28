@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, ManyToOne, JoinTable, OneToMany, OneToOne, JoinColumn } from "typeorm"
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, ManyToOne, JoinTable, OneToMany, OneToOne, JoinColumn, CreateDateColumn } from "typeorm"
 import { User } from "./user.entity"
 import { File } from "./file.entity"
 
@@ -24,4 +24,7 @@ export class Comment {
 
     @OneToMany(()=>Comment, comment => comment.parent, {onDelete: 'CASCADE'}) 
     reply: Comment[]
+
+    @CreateDateColumn()
+    createdDate: Date
 }

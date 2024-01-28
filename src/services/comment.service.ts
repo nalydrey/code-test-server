@@ -1,9 +1,10 @@
-import { In, Repository } from "typeorm"
+import { In, IsNull, Repository } from "typeorm"
 import { myDataSource } from "../data-source/data-source.init"
 import { Comment } from "../entities/comment.entity"
 import { CreateCommentDto } from "../dto/create-comment.dto"
 import { UserService, userService } from "./user.service"
 import { FileService, fileService } from "./file.service"
+import { QueryDto } from "../dto/query.dto"
 
 
 export class CommentService {
@@ -16,30 +17,46 @@ export class CommentService {
 
     }
 
-    async findSub(ids: number[]){
+    async findSub(ids: number[], query?: QueryDto){
+
+        const limit = 2
+        let page = query?.page || 0
+        const skip = page*limit
+        
         const arr: Comment[] = []
-        const comments = await this.repo.find({
+        const comments = await this.repo.findAndCount({
             where: {id: In(ids)},
             relations: {
                 reply: true,
                 parent: true
-            }
+            },
+            order: query?.sort,
+            skip: skip,
+            take: limit,
         })
 
-        await Promise.all(comments.map(async comment => {
+        await Promise.all(comments[0].map(async comment => {
             const subIds = comment.reply.map(comment => comment.id)
             if(subIds.length){
-                comment.reply = await this.findSub(subIds)
+                const findComments = await this.findSub(subIds)
+                comment.reply = findComments[0]
             }
         }))
 
         return comments
     }
 
-    async getMany() {
-        const comments = await this.repo.find()
+    async getMany(query: QueryDto) {
+        console.log(query);
+        
+        const comments = await this.repo.find({
+            where: {
+                parent: IsNull()
+            },
+        })
+        
         const ids = comments.map(comment => comment.id)
-        return this.findSub(ids)
+        return this.findSub(ids, query)
     }
     
     async createNew(createCommentDto: CreateCommentDto, parentComment?: Comment | null) {

@@ -6,9 +6,10 @@ export class CommentController {
     constructor(private commentService: CommentService){}
 
     async getMany(req: Request, res: Response){
-        const comments = await this.commentService.getMany()
+        const comments = await this.commentService.getMany(req.query)
         res.json({
-            comments
+            comments: comments[0],
+            total: comments[1]
         })
     }
     
